@@ -20,10 +20,12 @@ func main() {
 	defer connection.Close()
 
 	client := greetpb.NewGreetServiceClient(connection)
+
 	doUnary(client)
 }
 
 func doUnary(client greetpb.GreetServiceClient) {
+	fmt.Println("Starting to do unary RPC...")
 	req := &greetpb.GreetRequest{
 		Greeting: &greetpb.Greeting{
 			FirstName: "kasra",
