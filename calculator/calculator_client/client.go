@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"gRPC/greet/greetpb"
+	"gRPC/calculator/calculatorpb"
 	"google.golang.org/grpc"
 	"log"
 )
 
 func main() {
 
-	fmt.Println("Hi from client")
+	fmt.Println("Hi From Calculator Client")
 	connection, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
 	if err != nil {
@@ -19,22 +19,21 @@ func main() {
 
 	defer connection.Close()
 
-	client := greetpb.NewGreetServiceClient(connection)
+	client := calculatorpb.NewCalculatorServiceClient(connection)
 
 	doUnary(client)
 }
 
-func doUnary(client greetpb.GreetServiceClient) {
+func doUnary(client calculatorpb.CalculatorServiceClient) {
 	fmt.Println("Starting to do unary RPC...")
-	req := &greetpb.GreetRequest{
-		Greeting: &greetpb.Greeting{
-			FirstName: "kasra",
-			LastName:  "shirazi",
-		},
+	req := &calculatorpb.SumRequest{
+		FirstNumber:  1,
+		SecondNumber: 2,
 	}
-	res, err := client.Greet(context.Background(), req)
+
+	res, err := client.Sum(context.Background(), req)
 	if err != nil {
-		log.Fatalf("error while calling greet RPC: %v", err)
+		log.Fatalf("error while calling calculator RPC: %v", err)
 	}
-	log.Printf("response from greet %v", res.Result)
+	log.Printf("response from calculator %v", res.SumResult)
 }
