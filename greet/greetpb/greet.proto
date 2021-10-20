@@ -19,5 +19,11 @@ message GreetResponse {
 }
 
 service GreetService{
+  //  Unary
   rpc Greet(GreetRequest) returns (GreetResponse) {};
+
+  //  Server Streaming
+
+  rpc GreetMany
+
 }
