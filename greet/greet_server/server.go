@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"gRPC/greet/greetpb"
+	logs "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"os"
+	//logs "pkg/mod/github.com/sirupsen/logrus@v1.8.1"
 	"strconv"
 	"time"
 )
@@ -37,12 +40,21 @@ func (*Server) GreetManyTimes(req *greetpb.GreetManyTimesRequest, stream greetpb
 	return nil
 }
 
+func init() {
+	file, _ := os.OpenFile("./logs.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logs.SetFormatter(&logs.JSONFormatter{})
+	logs.SetOutput(file)
+}
+
 func main() {
 	fmt.Println("Hi From server")
 	listener, err := net.Listen("tcp", "127.0.0.1:50051")
 
 	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
+		logs.WithFields(logs.Fields{
+			"Message": "Listening Error",
+		}).Warn("Error :", err)
+		log.Fatalf("Failed to listen %v", err)
 	}
 
 	server := grpc.NewServer()
